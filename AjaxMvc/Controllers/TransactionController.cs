@@ -26,29 +26,23 @@ namespace AjaxMvc.Controllers
                           Problem("Entity set 'TransactionDbContext.Transactions'  is null.");
         }
 
-        // GET: Transaction/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Transaction/AddOrEdit(Insert)
+        // GET: Transaction/AddOrEdit/5(Update)
+        public async Task<IActionResult> AddOrEdit(int id = 0)
         {
-            if (id == null || _context.Transactions == null)
+            if (id == 0)
+                return View(new TransactionModel());
+            else
             {
-                return NotFound();
+                var transactionModel = await _context.Transactions.FindAsync(id);
+                if (transactionModel == null)
+                {
+                    return NotFound();
+                }
+                return View(transactionModel);
             }
-
-            var transactionModel = await _context.Transactions
-                .FirstOrDefaultAsync(m => m.TransactionId == id);
-            if (transactionModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(transactionModel);
         }
 
-        // GET: Transaction/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
 
         // POST: Transaction/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
